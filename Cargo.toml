@@ -1,0 +1,16 @@
+[package]
+name = "rust-terbilang"
+version = "0.1.0"
+authors = ["Des Dulianto <desdulianto@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "terbilang"
+path = "src/lib.rs"
+
+[[bin]]
+name = "terbilang"
+path = "src/main.rs"
+
+[dependencies]
