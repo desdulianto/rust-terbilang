@@ -1,11 +1,12 @@
 pub type Terbilang = Result<String, String>;
 
-pub type Number = u32;
+pub type Number = u64;
 
 struct ValueLabel{value: Number, label: &'static str}
 
 // HARUS diurutkan dari yang terbesar ke yang terkecil
-static DENOMINASI: [ValueLabel; 5] = [
+static DENOMINASI: [ValueLabel; 6] = [
+    ValueLabel{value: 1_000_000_000_000, label: "triliun"},
     ValueLabel{value: 1_000_000_000, label: "milyar"},
     ValueLabel{value: 1_000_000, label: "juta"},
     ValueLabel{value: 1_000, label: "ribu"},
@@ -112,8 +113,11 @@ mod tests {
             (22222220, "dua puluh dua juta dua ratus dua puluh dua ribu dua ratus dua puluh"),
             (222222220, "dua ratus dua puluh dua juta dua ratus dua puluh dua ribu dua ratus dua puluh"),
             (987654321, "sembilan ratus delapan puluh tujuh juta enam ratus lima puluh empat ribu tiga ratus dua puluh satu"),
-            (2222222220, "dua milyar dua ratus dua puluh dua juta dua ratus dua puluh dua ribu dua ratus dua puluh"),
             (1234567890, "satu milyar dua ratus tiga puluh empat juta lima ratus enam puluh tujuh ribu delapan ratus sembilan puluh"),
+            (2222222220, "dua milyar dua ratus dua puluh dua juta dua ratus dua puluh dua ribu dua ratus dua puluh"),
+            (1231234567890, "satu triliun dua ratus tiga puluh satu milyar dua ratus tiga puluh empat juta lima ratus enam puluh tujuh ribu delapan ratus sembilan puluh"),
+            (451231234567890, "empat ratus lima puluh satu triliun dua ratus tiga puluh satu milyar dua ratus tiga puluh empat juta lima ratus enam puluh tujuh ribu delapan ratus sembilan puluh"),
+            (4561231234567890, "empat ribu lima ratus enam puluh satu triliun dua ratus tiga puluh satu milyar dua ratus tiga puluh empat juta lima ratus enam puluh tujuh ribu delapan ratus sembilan puluh"),
             ];
         
         for test in tests.iter() {
