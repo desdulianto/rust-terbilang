@@ -1,4 +1,4 @@
-type Terbilang = Option<String>;
+type Terbilang = Result<String, String>;
 
 struct ValueLabel{value: u32, label: &'static str}
 
@@ -26,44 +26,35 @@ static SATUAN: [ValueLabel; 10] = [
 
 fn satuan(number: &u32) -> Terbilang {
     match SATUAN.iter().find(|x| x.value == *number) {
-        Some(n) => Some(String::from(n.label)),
-        None => None,
+        Some(n) => Ok(String::from(n.label)),
+        None => Err(String::from("satuan digit not found")),
     }
 }
 
 fn belasan(number: &u32) -> Terbilang {
-    let mut s = match terbilang(&(number % 10)) {
-        Some(s) => s,
-        None => return None,
-    };
+    let mut s = terbilang(&(number % 10))?;
     s.push_str(" belas");
-    Some(s.replace("satu belas", "sebelas"))
+    Ok(s.replace("satu belas", "sebelas"))
 }
 
 fn other(number: &u32) -> Terbilang {
     for denom in DENOMINASI.iter() {
         if *number >= denom.value {
-            let mut s = match terbilang(&(number / denom.value)) {
-                Some(s) => s,
-                None => return None,
-            };
+            let mut s = terbilang(&(number / denom.value))?;
             s.push_str(" ");
             s.push_str(denom.label);
             if *number % denom.value != 0 {
                 s.push_str(" ");
-                let s1 = match terbilang(&(number % denom.value)) {
-                    Some(s) => s,
-                    None => return None,
-                };
+                let s1 = terbilang(&(number % denom.value))?;
                 s.push_str(s1.as_str());
             }
 
-            return Some(s.replace("satu ribu", "seribu")
+            return Ok(s.replace("satu ribu", "seribu")
                 .replace("satu ratus", "seratus")
                 .replace("satu puluh", "sepuluh"));
         }
     }
-    None
+    Err(String::from("number out of range"))
 }
 
 pub fn terbilang(number: &u32) -> Terbilang {
@@ -124,7 +115,7 @@ mod tests {
             ];
         
         for test in tests.iter() {
-            assert_eq!(terbilang(&test.0), Some(String::from(test.1)));
+            assert_eq!(terbilang(&test.0), Ok(String::from(test.1)));
         }
     }
 }
