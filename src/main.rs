@@ -8,7 +8,7 @@ fn main() {
         return;
     }
     let number_arg= &args[1];
-    let number: u32 = number_arg.parse().expect("need a valid integer number");
+    let number: terbilang::Number = number_arg.parse().expect("need a valid integer number");
     let t = terbilang::terbilang(&number).unwrap_or(String::from(""));
     println!("number: {}, terbilang: {}", number, t);
 }

@@ -1,6 +1,8 @@
-type Terbilang = Result<String, String>;
+pub type Terbilang = Result<String, String>;
 
-struct ValueLabel{value: u32, label: &'static str}
+pub type Number = u32;
+
+struct ValueLabel{value: Number, label: &'static str}
 
 // HARUS diurutkan dari yang terbesar ke yang terkecil
 static DENOMINASI: [ValueLabel; 5] = [
@@ -24,20 +26,20 @@ static SATUAN: [ValueLabel; 10] = [
     ValueLabel{value: 9, label: "sembilan"},
 ];
 
-fn satuan(number: &u32) -> Terbilang {
+fn satuan(number: &Number) -> Terbilang {
     match SATUAN.iter().find(|x| x.value == *number) {
         Some(n) => Ok(String::from(n.label)),
         None => Err(String::from("satuan digit not found")),
     }
 }
 
-fn belasan(number: &u32) -> Terbilang {
+fn belasan(number: &Number) -> Terbilang {
     let mut s = terbilang(&(number % 10))?;
     s.push_str(" belas");
     Ok(s.replace("satu belas", "sebelas"))
 }
 
-fn other(number: &u32) -> Terbilang {
+fn other(number: &Number) -> Terbilang {
     for denom in DENOMINASI.iter() {
         if *number >= denom.value {
             let mut s = terbilang(&(number / denom.value))?;
@@ -57,7 +59,7 @@ fn other(number: &u32) -> Terbilang {
     Err(String::from("number out of range"))
 }
 
-pub fn terbilang(number: &u32) -> Terbilang {
+pub fn terbilang(number: &Number) -> Terbilang {
     match *number {
         0..=9 => satuan(&number),
         11..=19 => belasan(&number),
