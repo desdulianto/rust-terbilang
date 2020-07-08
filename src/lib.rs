@@ -1,6 +1,6 @@
 pub type Terbilang = Result<String, String>;
 
-pub type Number = u64;
+pub type Number = i64;
 
 struct ValueLabel{value: Number, label: &'static str}
 
@@ -35,7 +35,7 @@ fn satuan(number: &Number) -> Terbilang {
 }
 
 fn belasan(number: &Number) -> Terbilang {
-    let mut s = terbilang(&(number % 10))?;
+    let mut s = terbilang_helper(&(number % 10))?;
     s.push_str(" belas");
     Ok(s.replace("satu belas", "sebelas"))
 }
@@ -43,12 +43,12 @@ fn belasan(number: &Number) -> Terbilang {
 fn other(number: &Number) -> Terbilang {
     for denom in DENOMINASI.iter() {
         if *number >= denom.value {
-            let mut s = terbilang(&(number / denom.value))?;
+            let mut s = terbilang_helper(&(number / denom.value))?;
             s.push_str(" ");
             s.push_str(denom.label);
             if *number % denom.value != 0 {
                 s.push_str(" ");
-                let s1 = terbilang(&(number % denom.value))?;
+                let s1 = terbilang_helper(&(number % denom.value))?;
                 s.push_str(s1.as_str());
             }
 
@@ -60,12 +60,22 @@ fn other(number: &Number) -> Terbilang {
     Err(String::from("number out of range"))
 }
 
-pub fn terbilang(number: &Number) -> Terbilang {
+fn terbilang_helper(number: &Number) -> Terbilang {
     match *number {
         0..=9 => satuan(&number),
         11..=19 => belasan(&number),
         _ => other(&number),
     }
+}
+
+pub fn terbilang(number: &Number) -> Terbilang {
+    let mut t: String = String::new();
+    if *number < 0 {
+        t.push_str("negatif ");
+    }
+    let s = terbilang_helper(&(number.abs()))?;
+    t.push_str(s.as_str());
+    Ok(t)
 }
 
 #[cfg(test)]
@@ -75,6 +85,8 @@ mod tests {
     #[test]
     fn terbilang_it_works() {
         let tests = [
+            (-1_123_456_789_123, "negatif satu triliun seratus dua puluh tiga milyar empat ratus lima puluh enam juta tujuh ratus delapan puluh sembilan ribu seratus dua puluh tiga"),
+            (-1_000, "negatif seribu"),
             (0, "nol"),
             (1, "satu"),
             (2, "dua"),
