@@ -14,7 +14,7 @@ static DENOMINASI: [ValueLabel; 6] = [
     ValueLabel{value: 10, label: "puluh"},
 ];
 
-static SATUAN: [ValueLabel; 10] = [
+static SATUAN: [ValueLabel; 12] = [
     ValueLabel{value: 0, label: "nol"},
     ValueLabel{value: 1, label: "satu"},
     ValueLabel{value: 2, label: "dua"},
@@ -25,6 +25,8 @@ static SATUAN: [ValueLabel; 10] = [
     ValueLabel{value: 7, label: "tujuh"},
     ValueLabel{value: 8, label: "delapan"},
     ValueLabel{value: 9, label: "sembilan"},
+    ValueLabel{value: 10, label: "sepuluh"},
+    ValueLabel{value: 11, label: "sebelas"},
 ];
 
 fn satuan(number: &Number) -> Terbilang {
@@ -37,7 +39,7 @@ fn satuan(number: &Number) -> Terbilang {
 fn belasan(number: &Number) -> Terbilang {
     let mut s = terbilang_helper(&(number % 10))?;
     s.push_str(" belas");
-    Ok(s.replace("satu belas", "sebelas"))
+    Ok(s)
 }
 
 fn other(number: &Number) -> Terbilang {
@@ -52,9 +54,8 @@ fn other(number: &Number) -> Terbilang {
                 s.push_str(s1.as_str());
             }
 
-            return Ok(s.replace("satu ribu", "seribu")
-                .replace("satu ratus", "seratus")
-                .replace("satu puluh", "sepuluh"));
+            return Ok(s.replace("satu ratus", "seratus")
+                .replace("satu ribu", "seribu"));
         }
     }
     Err(String::from("number out of range"))
@@ -62,8 +63,8 @@ fn other(number: &Number) -> Terbilang {
 
 fn terbilang_helper(number: &Number) -> Terbilang {
     match *number {
-        0..=9 => satuan(&number),
-        11..=19 => belasan(&number),
+        0..=11 => satuan(&number),
+        12..=19 => belasan(&number),
         _ => other(&number),
     }
 }
@@ -111,13 +112,16 @@ mod tests {
             (29, "dua puluh sembilan"),
             (99, "sembilan puluh sembilan"),
             (100, "seratus"),
+            (110, "seratus sepuluh"),
             (111, "seratus sebelas"),
             (119, "seratus sembilan belas"),
             (220, "dua ratus dua puluh"),
             (1000, "seribu"),
             (1019, "seribu sembilan belas"),
             (1119, "seribu seratus sembilan belas"),
+            (2210, "dua ribu dua ratus sepuluh"),
             (2220, "dua ribu dua ratus dua puluh"),
+            (10000, "sepuluh ribu"),
             (12220, "dua belas ribu dua ratus dua puluh"),
             (22220, "dua puluh dua ribu dua ratus dua puluh"),
             (222220, "dua ratus dua puluh dua ribu dua ratus dua puluh"),
