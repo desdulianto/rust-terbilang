@@ -37,22 +37,19 @@ fn satuan(number: &Number) -> Terbilang {
 }
 
 fn belasan(number: &Number) -> Terbilang {
-    let mut s = terbilang_helper(&(number % 10))?;
-    s.push_str(" belas");
-    Ok(s)
+    Ok(format!("{} belas", terbilang_helper(&(number % 10))?))
 }
 
 fn other(number: &Number) -> Terbilang {
     for denom in DENOMINASI.iter() {
         if *number >= denom.value {
-            let mut s = terbilang_helper(&(number / denom.value))?;
-            s.push_str(" ");
-            s.push_str(denom.label);
-            if *number % denom.value != 0 {
-                s.push_str(" ");
-                let s1 = terbilang_helper(&(number % denom.value))?;
-                s.push_str(s1.as_str());
-            }
+            let s = format!("{} {}",
+                    terbilang_helper(&(number / denom.value))?, denom.label);
+            let s = match *number % denom.value == 0 {
+                true => s,
+                false => format!("{} {}", s,
+                    terbilang_helper(&(number % denom.value))?),
+            };
 
             return Ok(s.replace("satu ratus", "seratus")
                 .replace("satu ribu", "seribu"));
@@ -70,13 +67,12 @@ fn terbilang_helper(number: &Number) -> Terbilang {
 }
 
 pub fn terbilang(number: &Number) -> Terbilang {
-    let mut t: String = String::new();
-    if *number < 0 {
-        t.push_str("negatif ");
-    }
     let s = terbilang_helper(&(number.abs()))?;
-    t.push_str(s.as_str());
-    Ok(t)
+    let s = match *number < 0 {
+        true => format!("negatif {}", s),
+        false => s,
+    };
+    Ok(s)
 }
 
 #[cfg(test)]
