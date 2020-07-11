@@ -1,4 +1,4 @@
-pub type Terbilang = Result<String, String>;
+pub type Terbilang = Result<String, &'static str>;
 
 pub type Number = i64;
 
@@ -32,7 +32,7 @@ static SATUAN: [ValueLabel; 12] = [
 fn satuan(number: &Number) -> Terbilang {
     match SATUAN.iter().find(|x| x.value == *number) {
         Some(n) => Ok(String::from(n.label)),
-        None => Err(String::from("satuan digit not found")),
+        None => Err("satuan digit not found"),
     }
 }
 
@@ -55,7 +55,7 @@ fn other(number: &Number) -> Terbilang {
                 .replace("satu ribu", "seribu"));
         }
     }
-    Err(String::from("number out of range"))
+    Err("number out of range")
 }
 
 fn terbilang_helper(number: &Number) -> Terbilang {
