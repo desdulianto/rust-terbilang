@@ -1,5 +1,3 @@
-pub type Terbilang = Result<String, &'static str>;
-
 struct ValueLabel {
     value: i64,
     label: &'static str,
@@ -84,18 +82,18 @@ static SATUAN: [ValueLabel; 12] = [
     },
 ];
 
-fn satuan(number: &i64) -> Terbilang {
+fn satuan(number: &i64) -> Result<String, String> {
     match SATUAN.iter().find(|x| x.value == *number) {
         Some(n) => Ok(String::from(n.label)),
-        None => Err("satuan digit not found"),
+        None => Err(format!("weird number found: {}", number)),
     }
 }
 
-fn belasan(number: &i64) -> Terbilang {
+fn belasan(number: &i64) -> Result<String, String> {
     Ok(format!("{} belas", terbilang_helper(&(number % 10))?))
 }
 
-fn other(number: &i64) -> Terbilang {
+fn other(number: &i64) -> Result<String, String> {
     for denom in DENOMINASI.iter() {
         if *number >= denom.value {
             let s = format!(
@@ -113,10 +111,10 @@ fn other(number: &i64) -> Terbilang {
                 .replace("satu ribu", "seribu"));
         }
     }
-    Err("number out of range")
+    Err("number out of range".to_string())
 }
 
-fn terbilang_helper(number: &i64) -> Terbilang {
+fn terbilang_helper(number: &i64) -> Result<String, String> {
     match *number {
         0..=11 => satuan(&number),
         12..=19 => belasan(&number),
@@ -124,7 +122,7 @@ fn terbilang_helper(number: &i64) -> Terbilang {
     }
 }
 
-pub fn terbilang(number: &i64) -> Terbilang {
+pub fn terbilang(number: &i64) -> Result<String, String> {
     let s = terbilang_helper(&(number.abs()))?;
     let s = match *number < 0 {
         true => format!("negatif {}", s),
