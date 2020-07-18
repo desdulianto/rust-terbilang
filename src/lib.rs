@@ -95,24 +95,22 @@ fn belasan(number: &i64) -> String {
 }
 
 fn other(number: &i64) -> String {
-    for denom in DENOMINASI.iter() {
-        if *number >= denom.value {
-            let s = format!(
-                "{} {}",
-                terbilang_helper(&(number / denom.value)),
-                denom.label
-            );
-            let s = match *number % denom.value == 0 {
-                true => s,
-                false => format!("{} {}", s, terbilang_helper(&(number % denom.value))),
-            };
-
-            return s
-                .replace("satu ratus", "seratus")
-                .replace("satu ribu", "seribu");
-        }
+    if let Some(denom) = DENOMINASI.iter().find(|x| *number >= x.value) {
+        let s = format!(
+            "{} {}",
+            terbilang_helper(&(number / denom.value)),
+            denom.label
+        );
+        let s = if *number % denom.value == 0 {
+            s
+        } else {
+            format!("{} {}", s, terbilang_helper(&(number % denom.value)))
+        };
+        s.replace("satu ratus", "seratus")
+            .replace("satu ribu", "seribu")
+    } else {
+        "".to_string() // should be impossible
     }
-    "".to_string() // should be impossible
 }
 
 fn terbilang_helper(number: &i64) -> String {
@@ -125,11 +123,11 @@ fn terbilang_helper(number: &i64) -> String {
 
 pub fn terbilang(number: &i64) -> String {
     let s = terbilang_helper(&(number.abs()));
-    let s = match *number < 0 {
-        true => format!("negatif {}", s),
-        false => s,
-    };
-    s
+    if *number < 0 {
+        format!("negatif {}", s)
+    } else {
+        s
+    }
 }
 
 #[cfg(test)]
