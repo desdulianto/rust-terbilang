@@ -1,64 +1,122 @@
 pub type Terbilang = Result<String, &'static str>;
 
-pub type Number = i64;
-
-struct ValueLabel{value: Number, label: &'static str}
+struct ValueLabel {
+    value: i64,
+    label: &'static str,
+}
 
 // HARUS diurutkan dari yang terbesar ke yang terkecil
 static DENOMINASI: [ValueLabel; 6] = [
-    ValueLabel{value: 1_000_000_000_000, label: "triliun"},
-    ValueLabel{value: 1_000_000_000, label: "milyar"},
-    ValueLabel{value: 1_000_000, label: "juta"},
-    ValueLabel{value: 1_000, label: "ribu"},
-    ValueLabel{value: 100, label: "ratus"},
-    ValueLabel{value: 10, label: "puluh"},
+    ValueLabel {
+        value: 1_000_000_000_000,
+        label: "triliun",
+    },
+    ValueLabel {
+        value: 1_000_000_000,
+        label: "milyar",
+    },
+    ValueLabel {
+        value: 1_000_000,
+        label: "juta",
+    },
+    ValueLabel {
+        value: 1_000,
+        label: "ribu",
+    },
+    ValueLabel {
+        value: 100,
+        label: "ratus",
+    },
+    ValueLabel {
+        value: 10,
+        label: "puluh",
+    },
 ];
 
 static SATUAN: [ValueLabel; 12] = [
-    ValueLabel{value: 0, label: "nol"},
-    ValueLabel{value: 1, label: "satu"},
-    ValueLabel{value: 2, label: "dua"},
-    ValueLabel{value: 3, label: "tiga"},
-    ValueLabel{value: 4, label: "empat"},
-    ValueLabel{value: 5, label: "lima"},
-    ValueLabel{value: 6, label: "enam"},
-    ValueLabel{value: 7, label: "tujuh"},
-    ValueLabel{value: 8, label: "delapan"},
-    ValueLabel{value: 9, label: "sembilan"},
-    ValueLabel{value: 10, label: "sepuluh"},
-    ValueLabel{value: 11, label: "sebelas"},
+    ValueLabel {
+        value: 0,
+        label: "nol",
+    },
+    ValueLabel {
+        value: 1,
+        label: "satu",
+    },
+    ValueLabel {
+        value: 2,
+        label: "dua",
+    },
+    ValueLabel {
+        value: 3,
+        label: "tiga",
+    },
+    ValueLabel {
+        value: 4,
+        label: "empat",
+    },
+    ValueLabel {
+        value: 5,
+        label: "lima",
+    },
+    ValueLabel {
+        value: 6,
+        label: "enam",
+    },
+    ValueLabel {
+        value: 7,
+        label: "tujuh",
+    },
+    ValueLabel {
+        value: 8,
+        label: "delapan",
+    },
+    ValueLabel {
+        value: 9,
+        label: "sembilan",
+    },
+    ValueLabel {
+        value: 10,
+        label: "sepuluh",
+    },
+    ValueLabel {
+        value: 11,
+        label: "sebelas",
+    },
 ];
 
-fn satuan(number: &Number) -> Terbilang {
+fn satuan(number: &i64) -> Terbilang {
     match SATUAN.iter().find(|x| x.value == *number) {
         Some(n) => Ok(String::from(n.label)),
         None => Err("satuan digit not found"),
     }
 }
 
-fn belasan(number: &Number) -> Terbilang {
+fn belasan(number: &i64) -> Terbilang {
     Ok(format!("{} belas", terbilang_helper(&(number % 10))?))
 }
 
-fn other(number: &Number) -> Terbilang {
+fn other(number: &i64) -> Terbilang {
     for denom in DENOMINASI.iter() {
         if *number >= denom.value {
-            let s = format!("{} {}",
-                    terbilang_helper(&(number / denom.value))?, denom.label);
+            let s = format!(
+                "{} {}",
+                terbilang_helper(&(number / denom.value))?,
+                denom.label
+            );
             let s = match *number % denom.value == 0 {
                 true => s,
-                false => format!("{} {}", s,
-                    terbilang_helper(&(number % denom.value))?),
+                false => format!("{} {}", s, terbilang_helper(&(number % denom.value))?),
             };
 
-            return Ok(s.replace("satu ratus", "seratus")
+            return Ok(s
+                .replace("satu ratus", "seratus")
                 .replace("satu ribu", "seribu"));
         }
     }
     Err("number out of range")
 }
 
-fn terbilang_helper(number: &Number) -> Terbilang {
+fn terbilang_helper(number: &i64) -> Terbilang {
     match *number {
         0..=11 => satuan(&number),
         12..=19 => belasan(&number),
@@ -66,7 +124,7 @@ fn terbilang_helper(number: &Number) -> Terbilang {
     }
 }
 
-pub fn terbilang(number: &Number) -> Terbilang {
+pub fn terbilang(number: &i64) -> Terbilang {
     let s = terbilang_helper(&(number.abs()))?;
     let s = match *number < 0 {
         true => format!("negatif {}", s),
@@ -131,7 +189,7 @@ mod tests {
             (451231234567890, "empat ratus lima puluh satu triliun dua ratus tiga puluh satu milyar dua ratus tiga puluh empat juta lima ratus enam puluh tujuh ribu delapan ratus sembilan puluh"),
             (4561231234567890, "empat ribu lima ratus enam puluh satu triliun dua ratus tiga puluh satu milyar dua ratus tiga puluh empat juta lima ratus enam puluh tujuh ribu delapan ratus sembilan puluh"),
             ];
-        
+
         for test in tests.iter() {
             assert_eq!(terbilang(&test.0), Ok(String::from(test.1)));
         }
