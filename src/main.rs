@@ -9,6 +9,6 @@ fn main() {
     }
     let number_arg = &args[1];
     let number: i64 = number_arg.parse().expect("need a valid integer number");
-    let t = terbilang::terbilang(&number).unwrap_or(String::from(""));
+    let t = terbilang::terbilang(&number);
     println!("number: {}, terbilang: {}", number, t);
 }
