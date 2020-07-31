@@ -1,14 +1,21 @@
 use std::env;
 use terbilang;
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!("rust-terbilang <number>");
-        return;
+fn get_number_arg(args: &mut env::Args) -> Result<i64, String> {
+    let mut args = args.take(2);
+    let prog_name = args.next().unwrap();
+    match args.next() {
+        Some(arg) => match arg.parse::<i64>() {
+            Ok(number) => Ok(number),
+            Err(x) => Err(format!("{} `{}`", x, arg)),
+        },
+        _ => Err(format!("usage: {} <number>", prog_name)),
     }
-    let number_arg = &args[1];
-    let number: i64 = number_arg.parse().expect("need a valid integer number");
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let number: i64 = get_number_arg(&mut env::args())?;
     let t = terbilang::terbilang(&number);
     println!("number: {}, terbilang: {}", number, t);
+    Ok(())
 }

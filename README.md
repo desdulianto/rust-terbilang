@@ -1,3 +1,3 @@
 # rust-terbilang
 
-contoh binary/library terbilang dengan menggunakan rust.
+Said number (terbilang) for Indonesia Language (Bahasa Indonesia).
