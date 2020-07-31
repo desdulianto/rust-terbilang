@@ -122,9 +122,9 @@ fn terbilang_helper(number: &i64) -> String {
 }
 
 /// Returns said number (terbilang) in Indonesia Language (Bahasa Indonesia).
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// use terbilang::terbilang;
 /// let said = terbilang(10);

@@ -7,7 +7,7 @@ license = "MIT"
 description = "A tool and library for converting number to said number in Indonesia Language (Bahasa Indonesia)"
 homepage = "https://github.com/desdulianto/rust-terbilang"
 repository = "https://github.com/desdulianto/rust-terbilang"
-keywords = ["cli", "terbilang", "said number"]
+keywords = ["cli", "terbilang", "bahasa", "indonesia"]
 categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
