@@ -15,7 +15,7 @@ fn get_number_arg(args: &mut env::Args) -> Result<i64, String> {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let number: i64 = get_number_arg(&mut env::args())?;
-    let t = terbilang::terbilang(&number);
+    let t = terbilang::terbilang(number);
     println!("number: {}, terbilang: {}", number, t);
     Ok(())
 }

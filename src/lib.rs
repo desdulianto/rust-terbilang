@@ -82,29 +82,29 @@ static SATUAN: [ValueLabel; 12] = [
     },
 ];
 
-fn satuan(number: &i64) -> String {
-    if let Some(n) = SATUAN.iter().find(|x| x.value == *number) {
+fn satuan(number: i64) -> String {
+    if let Some(n) = SATUAN.iter().find(|x| x.value == number) {
         String::from(n.label)
     } else {
         "".to_string() // should be impossible
     }
 }
 
-fn belasan(number: &i64) -> String {
-    format!("{} belas", terbilang_helper(&(number % 10)))
+fn belasan(number: i64) -> String {
+    format!("{} belas", terbilang_helper(number % 10))
 }
 
-fn other(number: &i64) -> String {
-    if let Some(denom) = DENOMINASI.iter().find(|x| *number >= x.value) {
+fn other(number: i64) -> String {
+    if let Some(denom) = DENOMINASI.iter().find(|x| number >= x.value) {
         let s = format!(
             "{} {}",
-            terbilang_helper(&(number / denom.value)),
+            terbilang_helper(number / denom.value),
             denom.label
         );
-        let s = if *number % denom.value == 0 {
+        let s = if number % denom.value == 0 {
             s
         } else {
-            format!("{} {}", s, terbilang_helper(&(number % denom.value)))
+            format!("{} {}", s, terbilang_helper(number % denom.value))
         };
         s.replace("satu ratus", "seratus")
             .replace("satu ribu", "seribu")
@@ -113,11 +113,11 @@ fn other(number: &i64) -> String {
     }
 }
 
-fn terbilang_helper(number: &i64) -> String {
-    match *number {
-        0..=11 => satuan(&number),
-        12..=19 => belasan(&number),
-        _ => other(&number),
+fn terbilang_helper(number: i64) -> String {
+    match number {
+        0..=11 => satuan(number),
+        12..=19 => belasan(number),
+        _ => other(number),
     }
 }
 
@@ -129,9 +129,9 @@ fn terbilang_helper(number: &i64) -> String {
 /// use terbilang::terbilang;
 /// let said = terbilang(10);
 /// ```
-pub fn terbilang(number: &i64) -> String {
-    let s = terbilang_helper(&(number.abs()));
-    if *number < 0 {
+pub fn terbilang(number: i64) -> String {
+    let s = terbilang_helper(number.abs());
+    if number < 0 {
         format!("negatif {}", s)
     } else {
         s
@@ -196,7 +196,7 @@ mod tests {
             ];
 
         for test in tests.iter() {
-            assert_eq!(terbilang(&test.0), String::from(test.1));
+            assert_eq!(terbilang(test.0), String::from(test.1));
         }
     }
 }
