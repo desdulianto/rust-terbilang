@@ -35,7 +35,7 @@ fn belasan(number: i64) -> String {
 fn other(number: i64) -> String {
     let denom = DENOMINASI.iter().find(|x| number >= x.0).unwrap();
     let s = format!("{} {}", terbilang_helper(number / denom.0), denom.1);
-    let s = if number % denom.0== 0 {
+    let s = if number % denom.0 == 0 {
         s
     } else {
         format!("{} {}", s, terbilang_helper(number % denom.0))
