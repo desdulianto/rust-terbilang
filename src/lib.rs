@@ -1,102 +1,44 @@
-struct ValueLabel {
-    value: i64,
-    label: &'static str,
-}
+type ValueLabel = (i64, &'static str);
 
 // HARUS diurutkan dari yang terbesar ke yang terkecil
 static DENOMINASI: [ValueLabel; 6] = [
-    ValueLabel {
-        value: 1_000_000_000_000,
-        label: "triliun",
-    },
-    ValueLabel {
-        value: 1_000_000_000,
-        label: "milyar",
-    },
-    ValueLabel {
-        value: 1_000_000,
-        label: "juta",
-    },
-    ValueLabel {
-        value: 1_000,
-        label: "ribu",
-    },
-    ValueLabel {
-        value: 100,
-        label: "ratus",
-    },
-    ValueLabel {
-        value: 10,
-        label: "puluh",
-    },
+    (1_000_000_000_000, "triliun"),
+    (1_000_000_000, "milyar"),
+    (1_000_000, "juta"),
+    (1_000, "ribu"),
+    (100, "ratus"),
+    (10, "puluh"),
 ];
 
-static SATUAN: [ValueLabel; 12] = [
-    ValueLabel {
-        value: 0,
-        label: "nol",
-    },
-    ValueLabel {
-        value: 1,
-        label: "satu",
-    },
-    ValueLabel {
-        value: 2,
-        label: "dua",
-    },
-    ValueLabel {
-        value: 3,
-        label: "tiga",
-    },
-    ValueLabel {
-        value: 4,
-        label: "empat",
-    },
-    ValueLabel {
-        value: 5,
-        label: "lima",
-    },
-    ValueLabel {
-        value: 6,
-        label: "enam",
-    },
-    ValueLabel {
-        value: 7,
-        label: "tujuh",
-    },
-    ValueLabel {
-        value: 8,
-        label: "delapan",
-    },
-    ValueLabel {
-        value: 9,
-        label: "sembilan",
-    },
-    ValueLabel {
-        value: 10,
-        label: "sepuluh",
-    },
-    ValueLabel {
-        value: 11,
-        label: "sebelas",
-    },
+static SATUAN: [ValueLabel; 11] = [
+    (0, "nol"),
+    (1, "satu"),
+    (2, "dua"),
+    (3, "tiga"),
+    (4, "empat"),
+    (5, "lima"),
+    (6, "enam"),
+    (7, "tujuh"),
+    (8, "delapan"),
+    (9, "sembilan"),
+    (10, "sepuluh"),
 ];
 
 fn satuan(number: i64) -> String {
-    String::from(SATUAN.iter().find(|x| x.value == number).unwrap().label)
+    String::from(SATUAN.iter().find(|x| x.0 == number).unwrap().1)
 }
 
 fn belasan(number: i64) -> String {
-    format!("{} belas", terbilang_helper(number % 10))
+    format!("{} belas", terbilang_helper(number % 10)).replace("satu belas", "sebelas")
 }
 
 fn other(number: i64) -> String {
-    let denom = DENOMINASI.iter().find(|x| number >= x.value).unwrap();
-    let s = format!("{} {}", terbilang_helper(number / denom.value), denom.label);
-    let s = if number % denom.value == 0 {
+    let denom = DENOMINASI.iter().find(|x| number >= x.0).unwrap();
+    let s = format!("{} {}", terbilang_helper(number / denom.0), denom.1);
+    let s = if number % denom.0== 0 {
         s
     } else {
-        format!("{} {}", s, terbilang_helper(number % denom.value))
+        format!("{} {}", s, terbilang_helper(number % denom.0))
     };
     s.replace("satu ratus", "seratus")
         .replace("satu ribu", "seribu")
@@ -104,8 +46,8 @@ fn other(number: i64) -> String {
 
 fn terbilang_helper(number: i64) -> String {
     match number {
-        0..=11 => satuan(number),
-        12..=19 => belasan(number),
+        0..=10 => satuan(number),
+        11..=19 => belasan(number),
         _ => other(number),
     }
 }
