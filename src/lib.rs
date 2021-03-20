@@ -110,14 +110,17 @@ fn terbilang_helper(number: i64) -> String {
     }
 }
 
-/// Returns said number (terbilang) in Indonesia Language (Bahasa Indonesia).
-///
-/// # Examples
-///
-/// ```
-/// use terbilang::terbilang;
-/// let said = terbilang(10);
-/// ```
+/**
+Returns said number (terbilang) in Indonesia Language (Bahasa Indonesia).
+
+# Examples
+
+```
+use terbilang::terbilang;
+let said = terbilang(10);
+assert_eq!(said, "sepuluh");
+```
+*/
 pub fn terbilang(number: i64) -> String {
     let s = terbilang_helper(number.abs());
     if number < 0 {
