@@ -83,11 +83,7 @@ static SATUAN: [ValueLabel; 12] = [
 ];
 
 fn satuan(number: i64) -> String {
-    if let Some(n) = SATUAN.iter().find(|x| x.value == number) {
-        String::from(n.label)
-    } else {
-        "".to_string() // should be impossible
-    }
+    String::from(SATUAN.iter().find(|x| x.value == number).unwrap().label)
 }
 
 fn belasan(number: i64) -> String {
@@ -95,22 +91,15 @@ fn belasan(number: i64) -> String {
 }
 
 fn other(number: i64) -> String {
-    if let Some(denom) = DENOMINASI.iter().find(|x| number >= x.value) {
-        let s = format!(
-            "{} {}",
-            terbilang_helper(number / denom.value),
-            denom.label
-        );
-        let s = if number % denom.value == 0 {
-            s
-        } else {
-            format!("{} {}", s, terbilang_helper(number % denom.value))
-        };
-        s.replace("satu ratus", "seratus")
-            .replace("satu ribu", "seribu")
+    let denom = DENOMINASI.iter().find(|x| number >= x.value).unwrap();
+    let s = format!("{} {}", terbilang_helper(number / denom.value), denom.label);
+    let s = if number % denom.value == 0 {
+        s
     } else {
-        "".to_string() // should be impossible
-    }
+        format!("{} {}", s, terbilang_helper(number % denom.value))
+    };
+    s.replace("satu ratus", "seratus")
+        .replace("satu ribu", "seribu")
 }
 
 fn terbilang_helper(number: i64) -> String {
